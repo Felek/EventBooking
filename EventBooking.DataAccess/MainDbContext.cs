@@ -1,4 +1,4 @@
-﻿using EvenBooking.DataAccess.Entities;
+﻿using EventBooking.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EvenBooking.DataAccess
+namespace EventBooking.DataAccess
 {
     public class MainDbContext : DbContext
     {

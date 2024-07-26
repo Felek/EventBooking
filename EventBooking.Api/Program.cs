@@ -1,4 +1,4 @@
-using EvenBooking.DataAccess;
+using EventBooking.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Reflection;

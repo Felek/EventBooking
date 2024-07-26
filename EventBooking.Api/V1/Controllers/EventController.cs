@@ -1,5 +1,5 @@
 using AutoMapper;
-using EvenBooking.DataAccess.Entities;
+using EventBooking.DataAccess.Entities;
 using EventBooking.Api.V1.Dto;
 using EventBooking.DataAccess.Repositories;
 using Microsoft.AspNetCore.Mvc;

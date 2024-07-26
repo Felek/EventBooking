@@ -1,5 +1,5 @@
-﻿using EvenBooking.DataAccess;
-using EvenBooking.DataAccess.Entities;
+﻿using EventBooking.DataAccess;
+using EventBooking.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;

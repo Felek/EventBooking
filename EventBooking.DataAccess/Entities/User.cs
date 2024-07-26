@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EvenBooking.DataAccess.Entities
+namespace EventBooking.DataAccess.Entities
 {
     public class User
     {

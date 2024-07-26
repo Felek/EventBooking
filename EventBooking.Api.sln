@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBooking.Api", "EventBooking.Api\EventBooking.Api.csproj", "{607649AD-8A64-48BE-81CC-EA3FD17229FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBooking.DataAccess", "EvenBooking.DataAccess\EventBooking.DataAccess.csproj", "{A3384C15-0679-4316-82F2-DFBB96535609}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBooking.DataAccess", "EventBooking.DataAccess\EventBooking.DataAccess.csproj", "{A3384C15-0679-4316-82F2-DFBB96535609}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
