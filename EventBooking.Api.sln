@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBooking.Api", "EventBooking.Api\EventBooking.Api.csproj", "{607649AD-8A64-48BE-81CC-EA3FD17229FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBooking.DataAccess", "EvenBooking.DataAccess\EventBooking.DataAccess.csproj", "{A3384C15-0679-4316-82F2-DFBB96535609}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{607649AD-8A64-48BE-81CC-EA3FD17229FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{607649AD-8A64-48BE-81CC-EA3FD17229FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{607649AD-8A64-48BE-81CC-EA3FD17229FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{607649AD-8A64-48BE-81CC-EA3FD17229FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3384C15-0679-4316-82F2-DFBB96535609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3384C15-0679-4316-82F2-DFBB96535609}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3384C15-0679-4316-82F2-DFBB96535609}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3384C15-0679-4316-82F2-DFBB96535609}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {80E60D94-0096-45FF-9FDD-303C6FD15C06}
+	EndGlobalSection
+EndGlobal
