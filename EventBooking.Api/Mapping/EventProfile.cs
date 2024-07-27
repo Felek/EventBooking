@@ -6,9 +6,11 @@ namespace EventBooking.Api.Mapping
 {
     public class EventProfile : Profile
     {
-        public EventProfile() 
+        public EventProfile()
         {
             CreateMap<Event, EventDto>();
+            CreateMap<Event, AddEventDto>();
+            CreateMap<Event, EventBasicDto>();
         }
     }
 }

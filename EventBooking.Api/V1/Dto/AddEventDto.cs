@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventBooking.Api.V1.Dto
 {
-    public class EventDto : BaseReturnDto
+    public class AddEventDto
     {
-        public int Id { get; set; }
-
         /// <summary>
         /// Name of event
         /// </summary>

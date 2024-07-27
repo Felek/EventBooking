@@ -2,6 +2,7 @@ using EventBooking.DataAccess;
 using EventBooking.DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.OpenApi.Models;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +20,18 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(o =>
+{
+    o.SwaggerDoc("v1",
+        new OpenApiInfo
+        {
+            Title = "EventBooking API - V1",
+            Version = "v1"
+        });
+        
+        var filePath = Path.Combine(AppContext.BaseDirectory, "EventBooking.Api.xml");
+        o.IncludeXmlComments(filePath);
+});
 
 var app = builder.Build();
 

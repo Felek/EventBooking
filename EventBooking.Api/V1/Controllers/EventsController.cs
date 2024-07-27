@@ -4,7 +4,7 @@ using EventBooking.Api.V1.Dto;
 using EventBooking.DataAccess.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
-using EventBooking.Api.V1.Examples;
+using Asp.Versioning;
 
 namespace EventBooking.Api.V1.Controllers
 {
@@ -26,8 +26,7 @@ namespace EventBooking.Api.V1.Controllers
         }
 
         [HttpGet]
-        [SwaggerResponseExample(200, typeof(AllEventsExample))]
-        [ProducesResponseType(typeof(IEnumerable<EventDto>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<EventDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<EventBasicDto>>> GetAll([FromQuery] string country)
         {
             List<Event> events = null;
@@ -40,9 +39,8 @@ namespace EventBooking.Api.V1.Controllers
         }
 
         [HttpGet("{id}")]
-        [SwaggerResponseExample(200, typeof(AllEventsExample))]
-        [ProducesResponseType(typeof(EventDto), 200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(EventDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<EventDto>> Get(int id)
         {
             var eventEntity = await _eventRepository.Get(id);
@@ -50,23 +48,24 @@ namespace EventBooking.Api.V1.Controllers
             return Ok(_mapper.Map<EventDto>(eventEntity));
         }
 
-        [HttpPost("{id}")]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult> Add(EventDto eventDto)
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> Add(AddEventDto eventDto)
         {
+            //could consider use of idempotency-key here
+
             var eventEntity = _mapper.Map<Event>(eventDto);
             //lacking validations here
             _eventRepository.Add(eventEntity);
             await _eventRepository.SaveChanges();
 
-            return CreatedAtAction(nameof(Get), new { id = eventDto.Id }, eventEntity);
+            return CreatedAtAction(nameof(Get), new { id = eventEntity.Id }, eventEntity);
         }
 
         [HttpDelete("{id}")]
-        [SwaggerResponseExample(200, typeof(AllEventsExample))]
-        [ProducesResponseType(typeof(IEnumerable<EventDto>), 200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(IEnumerable<EventDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Delete(int id)
         {
             var eventEntity = await _eventRepository.Get(id);
@@ -81,10 +80,9 @@ namespace EventBooking.Api.V1.Controllers
         }
 
         [HttpPut("{id}")]
-        [SwaggerResponseExample(200, typeof(AllEventsExample))]
-        [ProducesResponseType(typeof(EventDto), 200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(EventDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Event>> Update(EventDto eventDto)
         {
             var eventEntity = _mapper.Map<Event>(eventDto);
