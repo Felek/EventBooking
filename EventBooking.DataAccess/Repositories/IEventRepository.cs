@@ -9,7 +9,12 @@ namespace EventBooking.DataAccess.Repositories
 {
     public interface IEventRepository
     {
-        Task<IEnumerable<Event>> GetAllEvents();
-        Task<IEnumerable<Event>> GetEventsByCountry(string country);
+        Task<IEnumerable<Event>> GetAll();
+        Task<Event> Get(int id);
+        Task<IEnumerable<Event>> GetByCountry(string country);
+        void Add(Event eventToAdd);
+        void Delete(Event eventToRemove);
+        void Update(Event eventToUpdate);
+        Task SaveChanges();
     }
 }

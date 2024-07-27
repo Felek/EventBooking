@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventBooking.Api.V1.Dto
 {
-    public class EventDto
+    public class EventDto : BaseReturnDto
     {
         public int Id { get; set; }
         public required string Name { get; set; }

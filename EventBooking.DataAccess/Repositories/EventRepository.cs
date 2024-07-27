@@ -19,15 +19,40 @@ namespace EventBooking.DataAccess.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Event>> GetAllEvents()
+        public async Task<IEnumerable<Event>> GetAll()
         {
-            return await _context.Events.ToListAsync();
+            return await _context.Events.AsNoTracking().ToListAsync();
         }
 
-        public async Task<IEnumerable<Event>> GetEventsByCountry(string country)
+        public async Task<IEnumerable<Event>> GetByCountry(string country)
         {
             country = country.ToLower();
-            return await _context.Events.Where(b => b.Country.ToLower() == country).ToListAsync();
+            return await _context.Events.Where(b => b.Country.ToLower() == country).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<Event> Get(int id)
+        {
+            return await _context.Events.FindAsync(id);
+        }
+
+        public void Add(Event eventToAdd)
+        {
+            _context.Add(eventToAdd);
+        }
+
+        public void Delete(Event eventToRemove)
+        {
+            _context.Events.Remove(eventToRemove);
+        }
+
+        public void Update(Event eventToUpdate)
+        {
+            _context.Update(eventToUpdate);
+        }
+
+        public async Task SaveChanges()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }
