@@ -32,7 +32,7 @@ namespace EventBooking.DataAccess.Repositories
 
         public async Task<Event> Get(int id)
         {
-            return await _context.Events.FindAsync(id);
+            return await _context.Events.Include(e => e.Users).FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public void Add(Event eventToAdd)

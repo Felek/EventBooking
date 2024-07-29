@@ -5,6 +5,7 @@ using EventBooking.DataAccess.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using Asp.Versioning;
+using EventBooking.Api.Utils;
 
 namespace EventBooking.Api.V1.Controllers
 {
@@ -19,10 +20,14 @@ namespace EventBooking.Api.V1.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public EventsController(ILogger<EventsController> logger, IEventRepository eventRepository, IMapper mapper)
+        public EventsController(ILogger<EventsController> logger, 
+                                IEventRepository eventRepository, 
+                                IUserRepository userRepository,
+                                IMapper mapper)
         {
             _logger = logger;
             _eventRepository = eventRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -36,7 +41,12 @@ namespace EventBooking.Api.V1.Controllers
             else
                 events = (await _eventRepository.GetByCountry(country)).ToList();
 
-            return _mapper.Map<List<EventBasicDto>>(events);
+            var dtos = _mapper.Map<List<EventBasicDto>>(events);
+
+            //I know, I'm a try hard with that HATEOAS here. For that I decided to add id to that dto as well,
+            //even if not mentioned in doc - erroneously I believe
+            dtos.ForEach(e => e.Links = LinksGenerator.CreateLinks(HttpContext.Request.Host.Value, "events", e.Id));
+            return dtos;
         }
 
         [HttpGet("{id}")]
@@ -51,7 +61,9 @@ namespace EventBooking.Api.V1.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<EventDto>(eventEntity));
+            var dto = _mapper.Map<EventDto>(eventEntity);
+            dto.Links = LinksGenerator.CreateLinks(HttpContext.Request.Host.Value, "events", id);
+            return Ok(dto);
         }
 
         [HttpPost]
@@ -66,7 +78,9 @@ namespace EventBooking.Api.V1.Controllers
             _eventRepository.Add(eventEntity);
             await _eventRepository.SaveChanges();
 
-            return CreatedAtAction(nameof(Get), new { id = eventEntity.Id }, eventEntity);
+            var dto = _mapper.Map<EventDto>(eventEntity);
+            dto.Links = LinksGenerator.CreateLinks(HttpContext.Request.Host.Value, "events", eventEntity.Id);
+            return CreatedAtAction(nameof(Get), new { id = eventEntity.Id }, dto);
         }
 
         [HttpDelete("{id}")]
@@ -99,8 +113,8 @@ namespace EventBooking.Api.V1.Controllers
             return NoContent();
         }
 
-        //as this can be used idempotently
-        [HttpPut("{id}/actions/register")]
+        //PUT, as this can be used idempotently
+        [HttpPut("{id}/register")]
         [ProducesResponseType(typeof(EventDto), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -118,7 +132,7 @@ namespace EventBooking.Api.V1.Controllers
                 return BadRequest("Email address is invalid");
             }
 
-            var user = await _userRepository.Get(id);
+            var user = await _userRepository.GetByEmail(eventDto.Email);
             if (user is null)
             {
                 user = new User { Email = eventDto.Email.ToLower() };
@@ -127,9 +141,8 @@ namespace EventBooking.Api.V1.Controllers
             if (!eventEntity.Users.Any(u => u.Id == user.Id))
             {
                 eventEntity.Users.Add(user);
+                await _eventRepository.SaveChanges();
             }
-
-            await _eventRepository.SaveChanges();
 
             return NoContent();
         }

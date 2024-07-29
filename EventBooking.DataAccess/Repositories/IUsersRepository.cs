@@ -9,7 +9,7 @@ namespace EventBooking.DataAccess.Repositories
 {
     public interface IUserRepository
     {
-        Task<User> Get(int id);
+        Task<User> GetByEmail(string email);
         Task SaveChanges();
     }
 }

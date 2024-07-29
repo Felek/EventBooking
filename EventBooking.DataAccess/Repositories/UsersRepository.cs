@@ -19,9 +19,9 @@ namespace EventBooking.DataAccess.Repositories
             _context = context;
         }
 
-        public async Task<User> Get(int id)
+        public async Task<User> GetByEmail(string email)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task SaveChanges()
