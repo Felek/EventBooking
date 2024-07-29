@@ -13,6 +13,8 @@ namespace EventBooking.DataAccess
     public class MainDbContext : DbContext
     {
         public DbSet<Event> Events { get; set; }
+        public DbSet<User> Users { get; set; }
+
         public MainDbContext(DbContextOptions<MainDbContext> options)
             : base(options)
         {
@@ -22,7 +24,8 @@ namespace EventBooking.DataAccess
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Event>().HasIndex(e => e.Id);
+            ;
+            builder.Entity<User>().HasIndex(e => e.Email).IsUnique();
         }
     }
 }

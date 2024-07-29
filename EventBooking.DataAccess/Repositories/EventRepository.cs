@@ -50,6 +50,11 @@ namespace EventBooking.DataAccess.Repositories
             _context.Update(eventToUpdate);
         }
 
+        public Task<bool> IsUserRegistered(int eventId, string email)
+        {
+            return _context.Events.AnyAsync(e => e.Id == eventId && e.Users.Any(u => u.Email == email));
+        }
+
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();

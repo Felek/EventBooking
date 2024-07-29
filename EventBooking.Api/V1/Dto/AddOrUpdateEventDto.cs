@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventBooking.Api.V1.Dto
 {
-    public class AddEventDto
+    public class AddOrUpdateEventDto
     {
         /// <summary>
         /// Name of event
@@ -14,7 +14,7 @@ namespace EventBooking.Api.V1.Dto
         /// <summary>
         /// Country where event is going to happen
         /// </summary>
-        /// <example>732aa76f-6c9c-4598-adaf-775aef8a0f3d</example>
+        /// <example>Poland</example>
         public required string Country { get; set; }
 
         /// <summary>
@@ -23,6 +23,11 @@ namespace EventBooking.Api.V1.Dto
         /// <example>So long, so long, so long, so long, so long,\r\nSo long, so long, so long, so long, so long\r\nSo long and thanks\r\nFor all the fish\r\n\r\n</example>
         public required string Description { get; set; }
         public DateTime StartDate { get; set; }
+
+        /// <summary>
+        /// Number of seats
+        /// </summary>
+        /// <example>100</example>
         public int Seats { get; set; }
     }
 }

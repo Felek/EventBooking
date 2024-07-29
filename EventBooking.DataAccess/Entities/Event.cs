@@ -21,5 +21,8 @@ namespace EventBooking.DataAccess.Entities
 
         [Range(0, 100)]
         public int Seats { get; set; }
+
+
+        public ICollection<User> Users { get; set; }
     }
 }
