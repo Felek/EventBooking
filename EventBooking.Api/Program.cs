@@ -1,5 +1,7 @@
+using EventBooking.Api.V1.Validators;
 using EventBooking.DataAccess;
 using EventBooking.DataAccess.Repositories;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.OpenApi.Models;
@@ -33,6 +35,8 @@ builder.Services.AddSwaggerGen(o =>
         var filePath = Path.Combine(AppContext.BaseDirectory, "EventBooking.Api.xml");
         o.IncludeXmlComments(filePath);
 });
+
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
 
 var app = builder.Build();
 

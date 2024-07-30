@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using Asp.Versioning;
 using EventBooking.Api.Utils;
+using FluentValidation;
 
 namespace EventBooking.Api.V1.Controllers
 {
@@ -18,16 +19,22 @@ namespace EventBooking.Api.V1.Controllers
         private readonly ILogger<EventsController> _logger;
         private readonly IEventRepository _eventRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IValidator<AddOrUpdateEventDto> _addOrUpdateValidator;
+        private readonly IValidator<RegisterDto> _registerValidator;
         private readonly IMapper _mapper;
 
         public EventsController(ILogger<EventsController> logger, 
                                 IEventRepository eventRepository, 
                                 IUserRepository userRepository,
+                                IValidator<AddOrUpdateEventDto> addOrUpdateValidator,
+                                IValidator<RegisterDto> registerValidator,
                                 IMapper mapper)
         {
             _logger = logger;
             _eventRepository = eventRepository;
             _userRepository = userRepository;
+            _addOrUpdateValidator = addOrUpdateValidator;
+            _registerValidator = registerValidator;
             _mapper = mapper;
         }
 
@@ -67,11 +74,17 @@ namespace EventBooking.Api.V1.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(EventDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Add(AddOrUpdateEventDto eventDto)
         {
             //could consider use of idempotency-key here
+
+            var validationResult = _addOrUpdateValidator.Validate(eventDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(string.Join('\n', validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
 
             var eventEntity = _mapper.Map<Event>(eventDto);
             //lacking validations here
@@ -80,11 +93,11 @@ namespace EventBooking.Api.V1.Controllers
 
             var dto = _mapper.Map<EventDto>(eventEntity);
             dto.Links = LinksGenerator.CreateLinks(HttpContext.Request.Host.Value, "events", eventEntity.Id);
-            return CreatedAtAction(nameof(Get), new { id = eventEntity.Id }, dto);
+            return CreatedAtAction(nameof(Add), new { id = eventEntity.Id }, dto);
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(IEnumerable<EventDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Delete(int id)
         {
@@ -100,7 +113,7 @@ namespace EventBooking.Api.V1.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(EventDto), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Event>> Update(int id, AddOrUpdateEventDto eventDto)
@@ -115,10 +128,10 @@ namespace EventBooking.Api.V1.Controllers
 
         //PUT, as this can be used idempotently
         [HttpPut("{id}/register")]
-        [ProducesResponseType(typeof(EventDto), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Event>> Register(int id, RegisterDto eventDto)
+        public async Task<ActionResult<Event>> Register(int id, RegisterDto registerDto)
         {
             var eventEntity = await _eventRepository.Get(id);
             if (eventEntity == null)
@@ -126,16 +139,16 @@ namespace EventBooking.Api.V1.Controllers
                 return NotFound();
             }
 
-            //just commenting: here I would check if email is valid, Regex
-            if (false)
+            var validationResult = _registerValidator.Validate(registerDto);
+            if (!validationResult.IsValid)
             {
-                return BadRequest("Email address is invalid");
+                return BadRequest(string.Join('\n', validationResult.Errors.Select(e => e.ErrorMessage)));
             }
 
-            var user = await _userRepository.GetByEmail(eventDto.Email);
+            var user = await _userRepository.GetByEmail(registerDto.Email);
             if (user is null)
             {
-                user = new User { Email = eventDto.Email.ToLower() };
+                user = new User { Email = registerDto.Email.ToLower() };
             }
 
             if (!eventEntity.Users.Any(u => u.Id == user.Id))
